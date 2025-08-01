@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alex Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleNavbar.css') }}" />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <h1>Comoter</h1>
+      <div>
+        <a href="./home.html">Home</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+      <div class="header">
+        <h1>PROJECT 1</h1>
+        <p>"I create tool just to satisfy my curiosity"</p>
+      </div>
+
+      <div class="section about">
+        <h2>ABOUT ME</h2>
+        <p>I am a chemical engineering student</p>
+      </div>
+
+      <div class="section experience">
+        <form method="post">
+          <label for="scrape_mode"><strong>Mode Scraping:</strong></label><br />
+          <select name="scrape_mode" id="scrape_mode">
+            <option value="list" {% if scrape_mode == 'list' %}selected{% endif %}>🔎 Halaman Daftar (List)</option>
+            <option value="detail" {% if scrape_mode == 'detail' %}selected{% endif %}>📄 Halaman Detail Langsung</option>
+          </select>
+          <br /><br />
+
+          <label for="url"><strong>Masukkan URL:</strong></label><br />
+          <input type="text" name="url" id="url" value="{{ url }}" placeholder="https://repository.upnjatim.ac.id/..." size="60" required />
+          <br /><br />
+
+          <label for="keyword"><strong>Kata Kunci:</strong></label><br />
+          <input type="text" name="keyword" id="keyword" value="{{ keyword }}" placeholder="Misalnya: silika" required />
+          <br /><br />
+
+          <div id="list-options">
+            <label for="start_index"><strong>Mulai dari indeks ke-:</strong></label><br />
+            <input type="number" name="start_index" id="start_index" value="{{ start_index or 0 }}" min="0" />
+            <br /><br />
+
+            <label for="limit"><strong>Batas jumlah halaman yang diperiksa:</strong></label><br />
+            <input type="number" name="limit" id="limit" value="{{ limit or 3 }}" min="1" />
+            <br /><br />
+          </div>
+
+          <input type="submit" value="🔍 Cari" />
+        </form>
+
+
+
+        {% if errors %}
+          <div style="background-color: #ffe0e0; color: #b00020; border: 1px solid #b00020; padding: 10px; margin-top: 20px;">
+            <strong>🚨 Error Log:</strong>
+            <ul>
+              {% for err in errors %}
+                <li>{{ err }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if results %}
+          <div class="result-section">
+            <h3>📚 Hasil ditemukan:</h3>
+            <ul>
+              {% for item in results %}
+                <li style="margin-bottom: 10px;">
+                  <strong>Item Page:</strong>
+                  <a href="{{ item.item_page }}" target="_blank">{{ item.item_page }}</a>
+                  <ul>
+                    {% for pdf in item.pdfs %}
+                      <li>
+                        <a href="{{ pdf.pdf_url }}" target="_blank">{{ pdf.pdf_url.split('/')|last }}</a>
+                        <span style="background-color: #e0e0e0; color: #333; padding: 2px 6px; border-radius: 6px; font-size: 0.85em; margin-left: 8px;">🔍 Muncul {{ pdf.count }} kali</span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- AI Keyword Suggestion Script -->
+    <script>
+
+    // logic select mode
+
+      const modeSelect = document.getElementById('scrape_mode');
+      const listOptions = document.getElementById('list-options');
+
+      function toggleListOptions() {
+        if (modeSelect.value === 'detail') {
+          listOptions.style.display = 'none';
+        } else {
+          listOptions.style.display = 'block';
+        }
+      }
+
+      modeSelect.addEventListener('change', toggleListOptions);
+      window.addEventListener('DOMContentLoaded', toggleListOptions); // run saat page load
+
+    // ----------------------------
+
+      const keywordInput = document.querySelector('input[name="keyword"]')
+      const suggestionBox = document.createElement('div')
+      suggestionBox.style.position = 'absolute'
+      suggestionBox.style.backgroundColor = '#fff'
+      suggestionBox.style.border = '1px solid #ccc'
+      suggestionBox.style.padding = '5px'
+      suggestionBox.style.borderRadius = '8px'
+      suggestionBox.style.maxHeight = '150px'
+      suggestionBox.style.overflowY = 'auto'
+      suggestionBox.style.zIndex = 1000
+      suggestionBox.style.display = 'none'
+      document.body.appendChild(suggestionBox)
+      
+      keywordInput.addEventListener('input', async function () {
+        const value = this.value.trim()
+        if (!value) {
+          suggestionBox.style.display = 'none'
+          return
+        }
+      
+        const rect = this.getBoundingClientRect()
+        suggestionBox.style.left = rect.left + 'px'
+        suggestionBox.style.top = rect.bottom + window.scrollY + 'px'
+        suggestionBox.style.width = rect.width + 'px'
+      
+        const res = await fetch('/suggest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ partial: value })
+        })
+      
+        const data = await res.json()
+        if (data.error) {
+          console.error('Error from AI:', data.error)
+          suggestionBox.style.display = 'none'
+          return
+        }
+      
+        suggestionBox.innerHTML = ''
+        if (data.suggestions && data.suggestions.length > 0) {
+          data.suggestions.forEach((s) => {
+            const div = document.createElement('div')
+            div.textContent = s
+            div.style.padding = '5px'
+            div.style.cursor = 'pointer'
+            div.addEventListener('click', () => {
+              keywordInput.value = s
+              suggestionBox.style.display = 'none'
+            })
+            suggestionBox.appendChild(div)
+          })
+          suggestionBox.style.display = 'block'
+        } else {
+          suggestionBox.style.display = 'none'
+        }
+      })
+      
+      document.addEventListener('click', function (e) {
+        if (!suggestionBox.contains(e.target) && e.target !== keywordInput) {
+          suggestionBox.style.display = 'none'
+        }
+      })
+
+      
+    </script>
+  </body>
+</html>

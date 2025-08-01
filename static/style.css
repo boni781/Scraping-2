@@ -1,0 +1,157 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fefae0;
+  margin: 0;
+  padding: 0;
+  color: #2b2b2b;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  position: relative;
+  top: 10vh;
+  max-width: 600px;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 48px;
+  color: #f2c200;
+  margin: 0;
+}
+
+.header p {
+  font-size: 18px;
+  font-style: italic;
+}
+
+.section {
+  margin-top: 30px;
+  border: 2px solid #ffd60a;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.section h2 {
+  margin-top: 0;
+  background-color: #ffd60a;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 20px;
+}
+
+.about p,
+.experience p,
+.projects ul {
+  margin: 10px 0 0 0;
+}
+
+.projects ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.projects li {
+  margin-bottom: 10px;
+  background-color: #f1f1f1;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  margin-left: 20px;
+  transition: color 0.3s;
+}
+
+li a:hover {
+  padding: 8px 0;
+  color: #000;
+  font-weight: bold;
+}
+
+
+.image-right {
+  float: right;
+  margin-left: 10px;
+  width: 80px;
+}
+
+.character-icons img {
+  width: 50px;
+  margin-right: 10px;
+}
+
+/* Section Box */
+.section {
+  margin-top: 15px; /* dikurangi dari 30px */
+  border: 2px solid #ffd60a;
+  border-radius: 12px;
+  padding: 15px; /* dikurangi dari 20px */
+}
+
+.section h2 {
+  background-color: #ffd60a;
+  padding: 8px; /* dikurangi */
+  margin: 0 0 10px 0; /* hilangkan margin atas, beri sedikit bawah */
+  border-radius: 5px;
+  font-size: 20px;
+  color: #333;
+}
+
+/* Form Style */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; /* Jarak antar elemen dikurangi */
+  margin-top: 2px;
+}
+
+form select,
+form input[type="text"],
+form input[type="number"] {
+  padding: 10px; /* lebih kecil dari sebelumnya */
+  font-size: 14px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+form input[type="submit"] {
+  padding: 6px 12px; /* lebih kecil */
+  background-color: #f2c200;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+  transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover {
+  background-color: #ffcb05;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px; /* dikurangi */
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 8px; /* dikurangi */
+  text-align: left;
+}
