@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alex Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleNavbar.css') }}" />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <h1>Comoter</h1>
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="#">Home</a>
+        <a href="https://wa.me/6281336900579">Contact</a>
+        <a href="https://www.linkedin.com/in/boni-mulia-putra-293704272/">Portfolio</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+
+  <div class="main-container-button">
+    <a href="{{ url_for('manual') }}" >
+      Emanuel
+    </a>
+  </div>
+
+
+    
+    <div class="container">
+      <div class="header">
+        <h1>PROJECT 1</h1>
+        <p>"Catatan: Web ini tidak menyimpan data secara permanen. Semua data hasil scraping hanya ditampilkan sementara saat proses berjalan dan tidak disimpan ke database atau file lokal.</p>
+      </div>
+
+      <div class="section about">
+        <h2>ABOUT ME</h2>
+        <p>Make sure you read emanuel</p>
+      </div>
+
+      <div class="section experience">
+        <form method="post">
+          <div>
+            <label for="scrape_mode"><strong>Mode Scraping:</strong></label>
+            <select name="scrape_mode" id="scrape_mode">
+              <option value="list" {% if scrape_mode == 'list' %}selected{% endif %}>🔎 Halaman Daftar Judul</option>
+              <option value="detail" {% if scrape_mode == 'detail' %}selected{% endif %}> Langsung ke Halaman Judul </option>
+            </select>
+          </div>
+
+          <div>
+            <label id="url-label" for="url-input"><strong>Masukkan URL:</strong></label>
+            <input type="text" name="url" id="url-input" placeholder="Contoh: http://repository.upnjatim.ac.id/id/eprint/123/" />
+          </div>
+
+          <div>
+            <label for="jurusanInput">Pilih atau Ketik Jurusan:</label>
+            <input list="jurusanList" id="jurusanInput" name="jurusan" placeholder="Mulai ketik untuk mencari..." />
+            <datalist id="jurusanList">
+              </datalist>
+          </div>
+          
+          <div>
+            <label for="keyword"><strong>Kata Kunci:</strong></label>
+            <input type="text" name="keyword" id="keyword" value="{{ keyword }}" placeholder="Misalnya: silika" required />
+          </div>
+          
+          <div id="list-options">
+            <div>
+                <label for="start_index"><strong>Mulai dari urutan Judul ke-:</strong></label>
+                <input type="number" name="start_index" id="start_index" value="{{ start_index or 0 }}" min="0" />
+            </div>
+            <div>
+                <label for="limit"><strong>Batas jumlah JUDUL yang diperiksa:</strong></label>
+                <input type="number" name="limit" id="limit" value="{{ limit or 3 }}" min="1" />
+            </div>
+          </div>
+
+          <div>
+            <input type="submit" value="🔍 Cari" />
+          </div>
+        </form>
+
+
+
+        {% if errors %}
+          <div style="background-color: #ffe0e0; color: #b00020; border: 1px solid #b00020; padding: 10px; margin-top: 20px;">
+            <strong>🚨 Error Log:</strong>
+            <ul>
+              {% for err in errors %}
+                <li>{{ err }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if results %}
+          <div class="result-section">
+            <h3>📚 Hasil ditemukan:</h3>
+            <ul>
+              {% for item in results %}
+                <li style="margin-bottom: 10px;">
+                  <strong>Item Page:</strong>
+                  <a href="{{ item.item_page }}" target="_blank">{{ item.item_page }}</a>
+                  <ul>
+                    {% for pdf in item.pdfs %}
+                      <li>
+                        <a href="{{ pdf.pdf_url }}" target="_blank">{{ pdf.pdf_url.split('/')|last }}</a>
+                        <span style="background-color: #e0e0e0; color: #333; padding: 2px 6px; border-radius: 6px; font-size: 0.85em; margin-left: 8px;">🔍 Muncul {{ pdf.count }} kali</span>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+      <!-- AI Keyword Suggestion Script -->
+      <script>
+    // Navbar toggle
+    function toggleMenu() {
+      const navLinks = document.getElementById("navLinks");
+      navLinks.classList.toggle("show");
+    }
+
+    // --- Logic toggle berdasarkan scrape_mode ---
+    const modeSelect = document.getElementById('scrape_mode');
+    const listOptions = document.getElementById('list-options');
+    const urlLabel = document.getElementById('url-label');
+    const urlInput = document.getElementById('url-input');
+    const jurusanDropdown = document.getElementById('jurusan-dropdown');
+
+    function updateModeDisplay() {
+      const modeSelect = document.getElementById('scrape_mode');
+      const listOptions = document.getElementById('list-options');
+      const urlLabel = document.getElementById('url-label');
+      const urlInput = document.getElementById('url-input');
+      const jurusanInput = document.getElementById('jurusanInput');
+
+      if (!urlInput || !jurusanInput || !listOptions || !modeSelect || !urlLabel) {
+        console.warn("Beberapa elemen tidak ditemukan.");
+        return;
+      }
+
+      if (modeSelect.value === 'list') {
+        listOptions.style.display = 'block';
+        urlLabel.innerHTML = "<strong>Pilihlah Jurusan:</strong>";
+        urlInput.style.display = 'none';
+        jurusanInput.style.display = 'inline-block';
+      } else {
+        listOptions.style.display = 'none';
+        urlLabel.innerHTML = "<strong>Masukkan URL:</strong>";
+        urlInput.style.display = 'inline-block';
+        jurusanInput.style.display = 'none';
+      }
+    }
+
+    modeSelect.addEventListener('change', updateModeDisplay);
+    window.addEventListener('DOMContentLoaded', updateModeDisplay); // Saat page pertama kali dimuat
+
+    // --- AI Keyword Suggestions ---
+    const keywordInput = document.querySelector('input[name="keyword"]');
+    const suggestionBox = document.createElement('div');
+    suggestionBox.style.position = 'absolute';
+    suggestionBox.style.backgroundColor = '#fff';
+    suggestionBox.style.border = '1px solid #ccc';
+    suggestionBox.style.padding = '5px';
+    suggestionBox.style.borderRadius = '8px';
+    suggestionBox.style.maxHeight = '150px';
+    suggestionBox.style.overflowY = 'auto';
+    suggestionBox.style.zIndex = 1000;
+    suggestionBox.style.display = 'none';
+    document.body.appendChild(suggestionBox);
+
+    keywordInput.addEventListener('input', async function () {
+      const value = this.value.trim();
+      if (!value) {
+        suggestionBox.style.display = 'none';
+        return;
+      }
+
+      const rect = this.getBoundingClientRect();
+      suggestionBox.style.left = rect.left + 'px';
+      suggestionBox.style.top = rect.bottom + window.scrollY + 'px';
+      suggestionBox.style.width = rect.width + 'px';
+
+      const res = await fetch('/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partial: value })
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        console.error('Error from AI:', data.error);
+        suggestionBox.style.display = 'none';
+        return;
+      }
+
+      suggestionBox.innerHTML = '';
+      if (data.suggestions && data.suggestions.length > 0) {
+        data.suggestions.forEach((s) => {
+          const div = document.createElement('div');
+          div.textContent = s;
+          div.style.padding = '5px';
+          div.style.cursor = 'pointer';
+          div.addEventListener('click', () => {
+            keywordInput.value = s;
+            suggestionBox.style.display = 'none';
+          });
+          suggestionBox.appendChild(div);
+        });
+        suggestionBox.style.display = 'block';
+      } else {
+        suggestionBox.style.display = 'none';
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!suggestionBox.contains(e.target) && e.target !== keywordInput) {
+        suggestionBox.style.display = 'none';
+      }
+    });
+
+
+     document.addEventListener("DOMContentLoaded", function () {
+    // letakkan semua JS kamu di sini
+    updateModeDisplay();
+    document.getElementById("scrape_mode").addEventListener("change", updateModeDisplay);
+  });
+
+      // Ambil data jurusan dari Flask endpoint
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/data-jurusan")
+          .then((response) => response.json())
+          .then((data) => {
+            const list = document.getElementById("jurusanList");
+            Object.entries(data).forEach(([nama, link]) => {
+              const option = document.createElement("option");
+              option.value = nama;
+              list.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error("Gagal memuat jurusan:", error);
+          });
+      })
+    
+  </script>
+
+  </body>
+</html>

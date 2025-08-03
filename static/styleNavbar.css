@@ -1,0 +1,145 @@
+/* ======================================================= */
+/* -- KODE CSS FINAL YANG SUDAH DIRAPIKAN -- */
+/* ======================================================= */
+
+.navbar {
+  position: fixed; /* DIUBAH MENJADI FIXED */
+  top: 0;
+  left: 0; /* DITAMBAHKAN */
+  width: 100%;
+  background-color: #84a990;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  z-index: 999;
+  box-sizing: border-box;
+}
+
+/* PENTING: Memberi jarak untuk konten utama */
+.container {
+  margin-top: 80px; /* Sesuaikan nilainya jika perlu */
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #1a1a1a;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #1a1a1a;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #000000;
+}
+
+/* Tombol Floating di Kanan Bawah */
+.main-container-button {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: #fff8dc;
+  color: #333;
+  padding: 12px 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.3s ease-in-out; /* Transisi diletakkan di state dasar */
+  z-index: 50;
+  text-align: center;
+}
+
+/* Hover state dibuat lebih bersih */
+.main-container-button:hover {
+  background-color: #fff3b0;
+  color: #000;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+  transform: translateY(-2px); /* Efek sedikit terangkat */
+}
+
+/* Menargetkan link di dalam tombol (jika ada) */
+.main-container-button a {
+  color: inherit; /* Mewarisi warna dari parent */
+  text-decoration: none;
+}
+
+/* ... (Kode untuk .left-content, .right-info, dll, tidak perlu diubah) ... */
+
+/* Responsive: stack vertikal di HP */
+@media (max-width: 600px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  /* Aturan .nav-links yang duplikat TELAH DIGABUNGKAN */
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 0;
+    background-color: #84a990;
+    border-radius: 0 0 12px 12px;
+    animation: slideDown 0.3s ease forwards;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Tambahan shadow untuk menu dropdown */
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .nav-links a {
+    text-align: center; /* Teks di tengah pada mobile */
+    padding: 12px 20px;
+    border-radius: 0; /* Hapus radius agar terlihat menyatu */
+    transition: all 0.3s;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Efek hover lebih subtle */
+    color: #000000;
+  }
+  
+  /* Aturan untuk tombol floating pada mobile */
+  .main-container-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    bottom: 20px;
+    right: 20px;
+  }
+}

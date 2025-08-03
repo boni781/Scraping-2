@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alex Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleNavbar.css') }}" />
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <h1>Comoter</h1>
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="#">Home</a>
+        <a href="https://wa.me/6281336900579">Contact</a>
+        <a href="https://www.linkedin.com/in/boni-mulia-putra-293704272/">Portfolio</a>
+      </div>
+    </div>
+    <div class="container">
+        <h2>How to Use This Website</h2>
+        <ul>
+          <li>Web ini hanya dapat digunakan untuk scraping dari repository UPN "Veteran" Jawa Timur, tepatnya pada halaman: https://repository.upnjatim.ac.id/view/subjects/TP155.html.</li>
+          <li>Menu 🔎 Halaman Daftar (List) digunakan untuk mencari dan mengambil data dari halaman daftar tugas akhir berdasarkan subjek tersebut.</li>
+          <li>Menu 📄 Halaman Detail Langsung digunakan untuk scraping yang lebih spesifik ke halaman detail dokumen (misalnya dari URL detail langsung).</li>
+          <li>Semakin banyak batas halaman yang dipilih, maka waktu proses akan semakin lama, karena sistem harus memproses dan mengambil data dari setiap halaman satu per satu.</li>
+        </ul>
+      </div>
+  </body>
+</html>
