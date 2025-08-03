@@ -1,11 +1,9 @@
-# [DITAMBAHKAN] Import yang dibutuhkan, 'openai' dihapus
 import os
 import io
 import json
 import re
 import fitz  # PyMuPDF
 import requests
-import google.generativeai as genai  # Library untuk Gemini
 from bs4 import BeautifulSoup
 from flask import Flask, request, render_template, jsonify
 
@@ -14,15 +12,6 @@ app = Flask(__name__)
 @app.route('/manual')
 def manual():
     return render_template('manual.html')
-
-# ✅ [DIUBAH] Konfigurasi API Key Gemini dengan aman dari Environment Variable
-try:
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        print("[PERINGATAN] Environment variable GEMINI_API_KEY tidak ditemukan.")
-    genai.configure(api_key=api_key)
-except Exception as e:
-    print(f"[ERROR] Gagal mengkonfigurasi Gemini: {e}")
 
 # =======================
 # 🔍 Ambil semua link halaman item dari halaman daftar
@@ -95,7 +84,7 @@ def read_pdf_from_url(pdf_url):
         return ""
 
 # =======================
-# 🌐 Form Utama: Input URL, Keyword, Start Index, Limit (VERSI FINAL)
+# 🌐 Form Utama: Input URL, Keyword, Start Index, Limit
 # =======================
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -143,9 +132,8 @@ def index():
             if not keyword:
                 errors.append("Kata kunci tidak boleh kosong.")
             if not target_url and not errors:
-                errors.append("URL atau Jurusan harus diisi.")
+                 errors.append("URL atau Jurusan harus diisi.")
         else:
-            # [DIUBAH] Logika mode 'detail' dan 'list' disempurnakan
             if mode == "detail":
                 pdf_links = get_pdfs_from_item_page(target_url)
                 if not pdf_links:
@@ -188,52 +176,16 @@ def index():
 
                     if valid_pdfs:
                         results.append({"item_page": item_url, "pdfs": valid_pdfs})
+                    else:
+                        # Menambahkan pesan error jika keyword tidak ditemukan di halaman item ini
+                        errors.append(f"Keyword '{keyword}' gak ketemu nde : {item_url}")
+                        # ===================================
 
     return render_template("Project1.html", results=results, url=display_url, keyword=keyword,
                            start_index=start_index, limit=limit, errors=errors, scrape_mode=mode)
-# =======================
-# 🤖 Endpoint baru untuk saran keyword dari AI (real-time)
-# =======================
-@app.route("/suggest", methods=["POST"])
-def suggest_keyword():
-    partial = request.json.get("partial", "")
-    if not partial.strip():
-        return jsonify({"suggestions": []})
-
-    # Prompt untuk Gemini (sedikit disesuaikan agar lebih jelas)
-    prompt = f"Berikan 5-7 saran kata kunci yang relevan dengan '{partial}' dalam konteks teknik kimia. Pisahkan setiap saran dengan baris baru. Jangan gunakan bullet point atau penomoran."
-
-    try:
-        # 1. Buat instance model Gemini
-        model = genai.GenerativeModel('gemini-1.5-pro-latest')
-
-        # 2. Konfigurasi untuk pembuatan konten
-        generation_config = {
-            "temperature": 0.7,
-            "max_output_tokens": 50
-        }
-
-        # 3. Panggil model Gemini
-        response = model.generate_content(
-            prompt,
-            generation_config=generation_config
-        )
-        
-        # 4. Ambil teks dari respons (lebih sederhana daripada OpenAI)
-        suggestion_text = response.text.strip()
-        
-        # Logika pemisahan saran tetap sama
-        suggestions = [s.strip("•- ") for s in suggestion_text.split("\n") if s.strip()]
-        
-        return jsonify({"suggestions": suggestions})
-    except Exception as e:
-        # Cetak error untuk debugging di server
-        print(f"Gemini API error: {e}")
-        # Kirim respons error ke client
-        return jsonify({"suggestions": [], "error": str(e)})
     
 # =======================
-#  memangil json ke html dropdown   
+#  memangil json ke html dropdown   
 # =======================
 @app.route('/data-jurusan')
 def data_jurusan():
