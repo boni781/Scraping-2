@@ -1,1 +1,1 @@
-web: gunicorn Project1:app
+web: gunicorn --timeout 120 Project1:app
