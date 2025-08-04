@@ -72,7 +72,7 @@ def get_pdfs_from_item_page(item_url):
 def read_pdf_from_url(pdf_url):
     try:
         print(f"[📖] Membaca PDF: {pdf_url}")
-        response = requests.get(pdf_url, timeout=30)
+        response = requests.get(pdf_url, timeout=60)
         with fitz.open(stream=io.BytesIO(response.content), filetype="pdf") as doc:
             text = ""
             for page in doc:
