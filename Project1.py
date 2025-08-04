@@ -19,7 +19,7 @@ def manual():
 def get_item_page_links(url):
     try:
         print(f"[🔍] Mengambil item links dari: {url}")
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=30)
         soup = BeautifulSoup(response.content, "html.parser")
         item_links = set()
 
@@ -44,7 +44,7 @@ def get_item_page_links(url):
 def get_pdfs_from_item_page(item_url):
     try:
         print(f"[📄] Mencari PDF di: {item_url}")
-        response = requests.get(item_url, timeout=10)
+        response = requests.get(item_url, timeout=30)
         soup = BeautifulSoup(response.content, "html.parser")
         pdf_links = []
 
@@ -72,7 +72,7 @@ def get_pdfs_from_item_page(item_url):
 def read_pdf_from_url(pdf_url):
     try:
         print(f"[📖] Membaca PDF: {pdf_url}")
-        response = requests.get(pdf_url, timeout=10)
+        response = requests.get(pdf_url, timeout=30)
         with fitz.open(stream=io.BytesIO(response.content), filetype="pdf") as doc:
             text = ""
             for page in doc:
@@ -197,4 +197,4 @@ def data_jurusan():
         return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
