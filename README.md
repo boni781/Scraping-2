@@ -20,53 +20,62 @@ Aplikasi ini menyediakan antarmuka web yang memungkinkan pengguna untuk mencari 
 
 ---
 
-## 📂 Struktur Kode `Project1.py`
+# Proyek Scraping Repository UPN Jatim (Panduan Pemula)
 
-File ini dibagi menjadi beberapa bagian logis:
-
-### 1. Imports
-Bagian ini mengimpor semua library dan modul yang diperlukan oleh aplikasi, seperti `Flask`, `Selenium`, `BeautifulSoup`, dan `fitz`.
-
-### 2. Inisialisasi Aplikasi Flask
-Baris `app = Flask(__name__)` dan `app.secret_key` digunakan untuk membuat instance aplikasi web dan mengonfigurasi kunci rahasia untuk manajemen sesi (session).
-
-### 3. Fungsi-fungsi Helper
-Ini adalah fungsi-fungsi inti yang menangani logika scraping:
-* `get_item_page_links()`: Mengambil semua link halaman detail skripsi dari halaman daftar subjek.
-* `get_pdfs_from_item_page()`: Mengambil semua link file `.pdf` dari satu halaman detail skripsi.
-* `read_pdf_from_url()`: Mengunduh dan mengekstrak seluruh teks dari sebuah file PDF.
-
-### 4. Rute-rute Aplikasi (Endpoints)
-Ini adalah bagian yang mendefinisikan halaman-halaman dan fungsionalitas API dari aplikasi web:
-* `@app.route("/")`: Menampilkan halaman utama (`Project1.html`) tempat pengguna memasukkan kriteria pencarian.
-* `@app.route("/manual")`: Menampilkan halaman panduan (`manual.html`).
-* `@app.route("/login")`: Menangani proses login. Rute ini menerima username dan password, lalu menggunakan Selenium untuk melakukan login otomatis di latar belakang dan menyimpan *cookies* sesi.
-* `@app.route("/scrape")`: Endpoint utama yang memulai proses scraping. Rute ini menerima data dari form, menjalankan fungsi-fungsi helper, dan mengirimkan hasilnya secara *real-time* ke browser.
-* Rute lainnya seperti `/logout`, `/check-status`, dan `/data-jurusan` berfungsi sebagai pendukung untuk manajemen sesi dan pengambilan data dinamis.
+Selamat datang! Ini adalah panduan lengkap untuk menjalankan aplikasi web scraping di komputer Anda. Aplikasi ini dibuat untuk mencari data di dalam dokumen pada repository UPN "Veteran" Jawa Timur.
 
 ---
 
-## ⚙️ Panduan Instalasi & Menjalankan (Lokal)
+## ✨ Fitur Utama
+* **Login Otomatis:** Bisa masuk ke sistem repository untuk mengakses dokumen yang dilindungi.
+* **Dua Mode Pencarian:**
+    1.  **Mode Daftar (List):** Mencari dari banyak dokumen berdasarkan jurusan dan tahun.
+    2.  **Mode Detail:** Mencari di satu dokumen spesifik.
+* **Hasil Real-time:** Proses pencarian ditampilkan secara langsung di browser.
+* **Pembacaan PDF:** Mampu membaca isi dokumen PDF untuk menemukan kata kunci.
 
-### Prasyarat
-* Python 3.10+
-* Git
-* Browser Google Chrome
+---
 
-### Langkah-langkah
-1.  **Clone Repositori:**
+## ✅ Persiapan Awal
+
+Sebelum mulai, pastikan dua hal ini sudah ada di komputer Anda:
+
+1.  **Python**: Minimal versi 3.10. Jika belum punya, unduh dari [python.org](https://www.python.org/downloads/). Saat instalasi, **centang kotak "Add Python to PATH"**.
+2.  **Browser Google Chrome**: Aplikasi ini akan mengontrol Google Chrome, jadi pastikan browsernya sudah terinstal.
+
+---
+
+## ⚙️ Instalasi (Cara Mudah via Download ZIP)
+
+Ikuti langkah-langkah ini untuk menjalankan aplikasi.
+
+### Langkah 1: Unduh dan Ekstrak Proyek
+1.  Buka halaman utama repositori ini di GitHub.
+2.  Klik tombol hijau **`< > Code`**.
+3.  Pilih **`Download ZIP`**. 
+4.  Setelah selesai diunduh, cari file `.zip` tersebut di komputer Anda (biasanya di folder "Downloads").
+5.  **Klik kanan** pada file zip lalu pilih **`Extract All...`** atau **`Ekstrak Semua...`**. Simpan hasil ekstraknya di lokasi yang mudah Anda ingat (misalnya di Desktop).
+
+### Langkah 2: Buka Terminal di dalam Folder Proyek
+Sekarang, Anda perlu membuka terminal (Command Prompt atau PowerShell) tepat di dalam folder yang baru saja Anda ekstrak.
+
+* **Cara Termudah (Windows):** Buka folder proyek, **klik kanan** pada area kosong di dalam folder, lalu pilih **`Open in Terminal`** atau **`Buka di Terminal`**.
+
+* **Cara Alternatif (`cd`):** Buka terminal secara manual, lalu ketik `cd` diikuti dengan path ke folder proyek Anda. Contoh:
     ```bash
-    git clone [URL_REPOSITORI_ANDA]
-    cd [NAMA_FOLDER_PROYEK]
+    cd C:\Users\NamaAnda\Desktop\scraping-offline-main
     ```
 
-2.  **Instal Semua Library:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+### Langkah 3: Instal Semua *Library*
+Terakhir, jalankan perintah ini untuk menginstal semua *library* yang dibutuhkan (seperti Flask, Selenium, dll.) secara otomatis.
 
-3.  **Jalankan Aplikasi:**
+```bash
+pip install -r requirements.txt
+```
+
+4.  **Jalankan Aplikasi:**
     ```bash
     python Project1.py
     ```
     Buka browser dan akses **http://127.0.0.1:5000**.
+
