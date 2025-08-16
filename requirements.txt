@@ -14,7 +14,6 @@ Flask==3.1.1
 Flask-Cors
 gitdb==4.0.12
 GitPython==3.1.45
-gunicorn
 google-ai-generativelanguage==0.6.15
 google-api-core==2.25.1
 google-api-python-client==2.177.0
@@ -75,3 +74,8 @@ uritemplate==4.2.0
 urllib3==2.5.0
 watchdog==6.0.0
 Werkzeug==3.1.3
+
+# ... (library lain)
+gevent
+gunicorn
+# ...
