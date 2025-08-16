@@ -16,6 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 # =================================================================
 # ⚙️ INISIALISASI APLIKASI FLASK
@@ -176,11 +177,18 @@ def login():
     password = request.form.get('password')
     login_url = 'https://repository.upnjatim.ac.id/cgi/users/login'
 
+    # --- PERUBAHAN DI SINI ---
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Chrome(options=options)
+    
+    # Menentukan path secara manual untuk driver dan browser
+    service = ChromeService(executable_path="/root/.nix-profile/bin/chromedriver")
+    options.binary_location = "/root/.nix-profile/bin/google-chrome"
+    
+    driver = webdriver.Chrome(service=service, options=options)
+    # --- AKHIR PERUBAHAN ---
 
     try:
         driver.get(login_url)
@@ -201,7 +209,7 @@ def login():
     except Exception as e:
         session.clear()
         driver.save_screenshot('debug_selenium_login_failed.png')
-        error_message = f"Login gagal. Error: Timeout atau elemen verifikasi tidak ditemukan."
+        error_message = f"Login gagal. Error: {str(e)}" # Memberikan error yang lebih spesifik
         return jsonify({'success': False, 'message': error_message})
     finally:
         driver.quit()

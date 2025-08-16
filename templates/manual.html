@@ -19,14 +19,45 @@
     </div>
     
     <div class="container">
-        <h2>How to Use This Website</h2>
+        <h2>Panduan Penggunaan Website Scraping</h2>
+
+        <h3>Langkah 1: Login (Penting!)</h3>
+        <p>
+            Beberapa dokumen (PDF) di repository bersifat <i>restricted</i> dan hanya bisa diakses setelah login.
+            Gunakan fitur <strong>Login</strong> di halaman utama untuk masuk menggunakan akun repository Anda.
+            Sistem akan membuka browser secara otomatis, melakukan login, dan menyimpan sesi Anda agar proses scraping bisa mengakses semua file.
+        </p>
+
+        <h3>Langkah 2: Pilih Mode Pencarian</h3>
+        <p>Ada dua cara utama untuk melakukan scraping:</p>
+        
+        <h4>A. 🔎 Halaman Daftar Judul (List)</h4>
+        <p>Gunakan mode ini untuk mencari kata kunci di banyak dokumen sekaligus dari halaman daftar subjek.</p>
         <ul>
-          <li>Web ini hanya dapat digunakan untuk scraping dari repository UPN "Veteran" Jawa Timur, tepatnya pada halaman: https://repository.upnjatim.ac.id/view/subjects/TP155.html.</li>
-          <li>Menu 🔎 Halaman Daftar Judul (List) digunakan untuk mencari dan mengambil data dari halaman daftar tugas akhir berdasarkan subjek tersebut.</li>
-          <li>Menu 📄 Langsung ke halaman judul digunakan untuk scraping yang lebih spesifik ke halaman detail dokumen (misalnya : https://repository.upnjatim.ac.id/16186/).</li>
-          <li>Semakin banyak batas halaman yang dipilih, maka waktu proses akan semakin lama, karena sistem harus memproses dan mengambil data dari setiap halaman satu per satu.</li>
+            <li><strong>Pilih Jurusan:</strong> Pilih fakultas atau jurusan yang ingin Anda cari dari daftar dropdown.</li>
+            <li><strong>Pilih Anchor (Tahun):</strong> (Opsional) Pilih tahun spesifik untuk memulai pencarian dari tahun tersebut ke bawah. Berguna jika Anda hanya ingin mencari skripsi dari tahun-tahun terbaru.</li>
+            <li><strong>Masukkan Kata Kunci:</strong> Tulis kata atau frasa yang ingin Anda cari di dalam file PDF.</li>
+            <li><strong>Indeks Mulai:</strong> Angka urutan untuk memulai pencarian. Biarkan 0 untuk memulai dari paling awal.</li>
+            <li><strong>Batas Halaman:</strong> Jumlah maksimum dokumen yang akan diperiksa. Semakin besar angkanya, semakin lama prosesnya.</li>
         </ul>
-      </div>
+
+        <h4>B. 📄 Langsung ke Halaman Judul (Detail)</h4>
+        <p>Gunakan mode ini jika Anda sudah tahu halaman dokumen spesifik yang ingin diperiksa.</p>
+        <ul>
+            <li><strong>URL Halaman Detail:</strong> Masukkan URL lengkap halaman dokumen, contohnya: <code>https://repository.upnjatim.ac.id/16186/</code>.</li>
+            <li><strong>Masukkan Kata Kunci:</strong> Tulis kata kunci yang ingin Anda cari di dalam PDF pada halaman tersebut.</li>
+        </ul>
+
+        <h3>Langkah 3: Membaca Hasil</h3>
+        <p>
+            Setelah Anda memulai proses scraping, Anda akan diarahkan ke halaman hasil yang menampilkan progres secara <i>real-time</i>.
+        </p>
+        <ul>
+            <li><strong>Panel Hasil Ditemukan:</strong> Menampilkan daftar halaman dokumen di mana kata kunci Anda ditemukan. Di bawah setiap halaman, akan ada link menuju file PDF beserta jumlah kemunculan kata kunci di dalamnya.</li>
+            <li><strong>Panel Log Proses:</strong> Menampilkan detail langkah-langkah yang sedang dilakukan oleh sistem, seperti "Memeriksa URL...", "Mendownload PDF...", dll. Ini membantu Anda memantau proses yang berjalan.</li>
+        </ul>
+        <p>Proses akan ditandai sebagai selesai jika semua item dalam batas yang Anda tentukan sudah diperiksa.</p>
+    </div>
 
     <script>
       function toggleMenu() {
@@ -41,4 +72,4 @@
     </script>
 
   </body>
-</html>gi
+</html>
