@@ -95,6 +95,7 @@ ERROR_SNIPPET_HTML = '<p class="log-error">❌ {{ message }}</p>'
 # =================================================================
 
 # --- PERUBAHAN: Semua fungsi helper sekarang menerima 'authenticated_session' ---
+# --- PERUBAHAN LOGIKA: Menggunakan list untuk menjaga urutan link ---
 def get_item_page_links(url, anchor_name=None, authenticated_session=None):
     client = authenticated_session or requests
     try:
@@ -110,14 +111,18 @@ def get_item_page_links(url, anchor_name=None, authenticated_session=None):
         else:
             search_scope = soup.find_all("a", href=True)
                 
-        item_links = set()
+        # --- PERUBAHAN DI SINI ---
+        item_links = [] # Menggunakan list, bukan set
         for a in search_scope:
             if not hasattr(a, 'get'): continue
             href = a.get("href", "")
             full_url = requests.compat.urljoin(url, href)
             if re.search(r"/\d{3,6}/$", full_url) and not re.search(r"\.\w{3,4}$", full_url, re.IGNORECASE):
-                item_links.add(full_url)
-        return list(item_links)
+                # Cek duplikat sebelum menambahkan untuk menjaga urutan
+                if full_url not in item_links:
+                    item_links.append(full_url)
+        return item_links # Mengembalikan list yang sudah terurut
+        # --- AKHIR PERUBAHAN ---
     except requests.exceptions.RequestException:
         return []
 
@@ -323,4 +328,4 @@ def scrape():
 # 🚀 MENJALANKAN APLIKASI
 # =================================================================
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=False)git init
