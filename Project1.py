@@ -94,8 +94,6 @@ ERROR_SNIPPET_HTML = '<p class="log-error">❌ {{ message }}</p>'
 # 🛠️ FUNGSI-FUNGSI HELPER (DIPERBARUI)
 # =================================================================
 
-# --- PERUBAHAN: Semua fungsi helper sekarang menerima 'authenticated_session' ---
-# --- PERUBAHAN LOGIKA: Menggunakan list untuk menjaga urutan link ---
 def get_item_page_links(url, anchor_name=None, authenticated_session=None):
     client = authenticated_session or requests
     try:
@@ -111,18 +109,15 @@ def get_item_page_links(url, anchor_name=None, authenticated_session=None):
         else:
             search_scope = soup.find_all("a", href=True)
                 
-        # --- PERUBAHAN DI SINI ---
-        item_links = [] # Menggunakan list, bukan set
+        item_links = [] 
         for a in search_scope:
             if not hasattr(a, 'get'): continue
             href = a.get("href", "")
             full_url = requests.compat.urljoin(url, href)
             if re.search(r"/\d{3,6}/$", full_url) and not re.search(r"\.\w{3,4}$", full_url, re.IGNORECASE):
-                # Cek duplikat sebelum menambahkan untuk menjaga urutan
                 if full_url not in item_links:
                     item_links.append(full_url)
-        return item_links # Mengembalikan list yang sudah terurut
-        # --- AKHIR PERUBAHAN ---
+        return item_links
     except requests.exceptions.RequestException:
         return []
 
@@ -175,7 +170,6 @@ def data_anchor():
         return jsonify(data)
     except Exception as e: return jsonify({"error": str(e)}), 500
 
-# --- PERUBAHAN: Fungsi login sekarang menyimpan COOKIES bukan password ---
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
@@ -183,7 +177,9 @@ def login():
     login_url = 'https://repository.upnjatim.ac.id/cgi/users/login'
 
     options = webdriver.ChromeOptions()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(options=options)
 
     try:
@@ -196,7 +192,6 @@ def login():
         session['logged_in'] = True
         session['username'] = username
         
-        # --- PERUBAHAN KUNCI: Ambil cookies dari Selenium dan simpan ke file ---
         cookies = driver.get_cookies()
         with open('credentials.json', 'w', encoding='utf-8') as f:
             json.dump(cookies, f)
@@ -214,7 +209,6 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    # Hapus juga file cookie saat logout
     if 'credentials.json' in __import__('os').listdir():
         __import__('os').remove('credentials.json')
     return jsonify({'success': True, 'message': 'Anda telah logout.'})
@@ -228,7 +222,6 @@ def check_status():
 @app.route('/hasil')
 def hasil(): return render_template_string(STREAM_LAYOUT_HTML)
 
-# --- PERUBAHAN BESAR PADA RUTE SCRAPE ---
 @app.route("/scrape", methods=["POST"])
 def scrape():
     form_data = request.form
@@ -261,7 +254,6 @@ def scrape():
         def stream_result(data):
             yield from stream_event("addResult", RESULT_SNIPPET_HTML, {"result": data})
 
-        # --- PERUBAHAN: Membuat session requests yang terotentikasi ---
         authenticated_session = None
         if session.get('logged_in'):
             yield from stream_log("Status: Login terdeteksi. Memuat cookie sesi...")
@@ -273,7 +265,6 @@ def scrape():
                 for cookie in cookies:
                     authenticated_session.cookies.set(cookie['name'], cookie['value'])
                 
-                # Tambahkan header standar untuk menyamar sebagai browser
                 authenticated_session.headers.update({
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
                 })
@@ -291,7 +282,6 @@ def scrape():
         
         if mode == "detail":
             yield from stream_log(f"Mode Detail: Memeriksa {target_url}...")
-            # --- PERUBAHAN: Gunakan authenticated_session ---
             pdf_links = get_pdfs_from_item_page(target_url, authenticated_session=authenticated_session)
             if not pdf_links: yield from stream_log("Tidak ada PDF ditemukan.", is_err=True)
             else:
@@ -300,7 +290,6 @@ def scrape():
                 else: yield from stream_log(f"Kata kunci '{keyword}' tidak ditemukan.")
         else:
             yield from stream_log(f"Mode Daftar: Mengambil link dari {target_url} (Anchor: {anchor_name or 'Tidak ada'})...")
-            # --- PERUBAHAN: Gunakan authenticated_session ---
             item_pages = get_item_page_links(target_url, anchor_name, authenticated_session=authenticated_session)
             total = len(item_pages)
             if not item_pages: yield from stream_log("Tidak dapat mengambil daftar item.", is_err=True)
@@ -309,7 +298,6 @@ def scrape():
             found_any = False
             for i, item_url in enumerate(item_pages[start_index : start_index + limit]):
                 yield from stream_log(f"[{start_index + i + 1}/{total}] Memeriksa: {item_url}")
-                # --- PERUBAHAN: Gunakan authenticated_session ---
                 pdf_links = get_pdfs_from_item_page(item_url, authenticated_session=authenticated_session)
                 if not pdf_links: continue
                 
@@ -328,4 +316,4 @@ def scrape():
 # 🚀 MENJALANKAN APLIKASI
 # =================================================================
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)git init
+    app.run(debug=True, use_reloader=False)
