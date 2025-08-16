@@ -10,6 +10,7 @@ import fitz  # PyMuPDF
 from bs4 import BeautifulSoup
 from flask import (Flask, request, render_template, jsonify, Response, 
                    stream_with_context, render_template_string, url_for, session)
+from flask_cors import CORS # --- TAMBAHAN ---
 
 # --- Import untuk Selenium ---
 from selenium import webdriver
@@ -17,11 +18,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager # --- TAMBAHAN ---
 
 # =================================================================
 # ⚙️ INISIALISASI APLIKASI FLASK
 # =================================================================
 app = Flask(__name__)
+CORS(app) # --- TAMBAHAN ---
 app.secret_key = 'kunci-rahasia-anda-yang-sangat-sulit-ditebak'
 
 # =================================================================
@@ -177,20 +180,16 @@ def login():
     password = request.form.get('password')
     login_url = 'https://repository.upnjatim.ac.id/cgi/users/login'
 
-    # --- PERUBAHAN DI SINI ---
+    # --- KODE BARU YANG SUDAH DIPERBAIKI ---
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     
-    # Menentukan path secara manual untuk driver dan browser
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-
-    # Hapus bagian path manual, biarkan Selenium mencari otomatis di PATH
-    driver = webdriver.Chrome(options=options)
+    # Biarkan webdriver-manager mengurus driver yang cocok secara otomatis
+    service = ChromeService(ChromeDriverManager().install())
+    
+    driver = webdriver.Chrome(service=service, options=options)
     # --- AKHIR PERUBAHAN ---
 
     try:
@@ -212,7 +211,7 @@ def login():
     except Exception as e:
         session.clear()
         driver.save_screenshot('debug_selenium_login_failed.png')
-        error_message = f"Login gagal. Error: {str(e)}" # Memberikan error yang lebih spesifik
+        error_message = f"Login gagal. Error: {str(e)}"
         return jsonify({'success': False, 'message': error_message})
     finally:
         driver.quit()
