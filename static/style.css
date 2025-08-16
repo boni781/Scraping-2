@@ -9,7 +9,6 @@
 }
 
 /* -- 2. Reset Dasar dan Pengaturan Body -- */
-/* DIKEMBALIKAN KE VERSI STANDAR AGAR TIDAK MENGGANGGU NAVBAR */
 * {
   margin: 0;
   padding: 0;
@@ -21,47 +20,32 @@ body, html {
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--background-color);
   color: var(--dark-text-color);
-  overflow-x: hidden; /* Mencegah scroll horizontal jika ada elemen yg sedikit meleset */
+  overflow-x: hidden;
 }
 
 /* -- 3. Styling Container Utama -- */
-/* Menggunakan margin untuk positioning, bukan flexbox dari body */
 .container {
   width: 100%;
   max-width: 700px;
-  
-  /* PENTING: Menggunakan margin untuk mengatur posisi */
-  /* 50px untuk jarak atas & bawah, auto untuk tengah horizontal */
-  margin: 50px auto; 
-  
+  margin: 20px auto;
   background-color: #fff;
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  
   display: flex;
   flex-direction: column;
-  gap: 5px; 
+  gap: 20px;
 }
-
-/* ================================================================
-KODE DI BAWAH INI SAMA SEPERTI SEBELUMNYA (SUDAH DIOPTIMALKAN)
-DAN TIDAK PERLU DIUBAH LAGI.
-================================================================
-*/
-
 
 /* -- 4. Header -- */
 .header {
   text-align: center;
   margin-bottom: 10px; 
 }
-
 .header h1 {
   font-size: 48px;
   color: var(--primary-color);
 }
-
 .header p {
   font-size: 18px;
   font-style: italic;
@@ -74,93 +58,73 @@ DAN TIDAK PERLU DIUBAH LAGI.
   border-radius: 12px;
   padding: 20px;
 }
-
 .section h2 {
+  text-align: center;
   background-color: var(--primary-color);
   color: var(--light-text-color);
   padding: 10px 15px;
   border-radius: 8px;
   font-size: 20px;
-  margin-bottom: 15px;
-}
-
-/* -- 6. List dan Link -- */
-.projects ul {
-  list-style: none;
-  padding-left: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.projects li {
-  background-color: var(--light-gray-color);
-  padding: 12px;
-  border-radius: 8px;
-  transition: transform 0.2s ease-in-out;
-}
-
-.projects li:hover {
-  transform: scale(1.02);
-}
-
-li a {
-  text-decoration: none;
-  color: var(--dark-text-color);
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-li a:hover {
-  color: var(--primary-color);
+  margin-bottom: 20px;
 }
 
 /* ======================================================= */
-/* -- 7. FORM DAN TABLE STYLING (VERSI FINAL DISEMPURNAKAN) -- */
+/* -- 7. FORM STYLING (VERSI FINAL & STABIL) -- */
 /* ======================================================= */
 
-/* Mengatur jarak ANTAR GRUP form */
 form {
   display: flex;
   flex-direction: column;
-  gap: 20px; 
+  gap: 15px;
 }
 
-/* Menargetkan semua div pembungkus di dalam form */
-form > div {
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  /* KUNCI #1: Buat 2 kolom: label (auto), input (mengisi sisa) */
+  grid-template-columns: auto 1fr;
+  gap: 15px;
+  align-items: center; 
+}
+
+#list-options {
   display: flex;
   flex-direction: column;
-  /* Mengatur jarak DI DALAM GRUP (antara Label dan Kotak Inputnya) */
-  gap: 10px; /* <-- NILAI DITINGKATKAN MENJADI 10px UNTUK JARAK YANG LEBIH JELAS */
+  gap: 15px;
 }
 
-/* Menargetkan div di dalam #list-options secara spesifik */
-#list-options {
-    gap: 20px; /* Jarak antar sub-grup di dalam #list-options juga disamakan */
-}
-
-/* Hapus margin-bottom negatif karena sudah diatur oleh .form-group */
 label {
   font-weight: bold;
+  /* KUNCI #2: Teks label rata kanan untuk kerapian */
+  text-align: right; 
+  font-size: 16px;
 }
 
-/* Mengatur semua kolom input agar ukurannya sama rata */
-form select,
+/* KUNCI #3: Aturan ini berlaku untuk SEMUA input field & select */
 form input[type="text"],
-form input[type="number"] {
-  width: 100%; /* <-- KUNCI UNTUK MEMBUAT UKURAN KOLOM SAMA RATA */
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
+form input[type="number"],
+form select {
+  width: 100%; /* Membuat semua input mengisi lebar kolomnya */
+  padding: 8px;
+  font-size: 15px;
+  max-width: 300px;
+  border-radius: 6px;
   border: 1px solid var(--border-color);
-  /* Tambahkan ini agar box-sizing konsisten, meskipun sudah ada di * */
   box-sizing: border-box; 
 }
 
-/* Mengatur tombol submit */
+.form-actions {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.footer-nav,
+.button-secondary,
 form input[type="submit"] {
   padding: 12px 20px;
-  margin-top: 10px; /* Beri sedikit jarak tambahan sebelum tombol submit */
   background-color: var(--primary-color);
   color: var(--light-text-color);
   border: none;
@@ -169,26 +133,13 @@ form input[type="submit"] {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
-  width: auto; /* Agar lebar tombol tidak 100% */
-  align-self: flex-start; /* Posisi tombol di kiri */
+  text-decoration: none;
+  text-align: center;
 }
 
+.footer-nav,
+.button-secondary:hover,
 form input[type="submit"]:hover {
   background-color: #6a8d74;
   transform: translateY(-2px);
-}
-
-/* ... sisa CSS untuk table tidak perlu diubah ... */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-table th, table td {
-  border: 1px solid var(--border-color);
-  padding: 12px;
-  text-align: left;
-}
-table th {
-  background-color: var(--light-gray-color);
 }
