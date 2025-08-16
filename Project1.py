@@ -184,10 +184,13 @@ def login():
     options.add_argument('--disable-dev-shm-usage')
     
     # Menentukan path secara manual untuk driver dan browser
-    service = ChromeService(executable_path="/root/.nix-profile/bin/chromedriver")
-    options.binary_location = "/root/.nix-profile/bin/google-chrome"
-    
-    driver = webdriver.Chrome(service=service, options=options)
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+
+    # Hapus bagian path manual, biarkan Selenium mencari otomatis di PATH
+    driver = webdriver.Chrome(options=options)
     # --- AKHIR PERUBAHAN ---
 
     try:
