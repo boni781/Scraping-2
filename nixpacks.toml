@@ -1,7 +1,6 @@
-# Menentukan versi Python
-[providers]
-python = "3.12"
-
-# Bagian ini tetap ada
 [phases.setup]
-nixPkgs = ["pkgs.google-chrome", "pkgs.chromedriver"]
+nixPkgs = [
+  "pkgs.python312", 
+  "pkgs.google-chrome", 
+  "pkgs.chromedriver"
+]
